@@ -31,9 +31,10 @@ G4VPhysicalVolume* BasicDetectorConstruction::Construct()
 							  true);			       //overlaps checking
 
 	//Create  the shape of a target to fire particles at
-	G4double target_sizeX=15.*cm;
-	G4double target_sizeY=15.*cm;
-	G4double target_sizeZ=40.*mm;
+	// 15 X 15 X 40
+	G4double target_sizeX=7.5*cm;
+	G4double target_sizeY=7.5*cm;
+	G4double target_sizeZ=20.*mm;
 	G4Box* solidDetector =
 			new G4Box("Detector",target_sizeX, target_sizeY, target_sizeZ);
 
