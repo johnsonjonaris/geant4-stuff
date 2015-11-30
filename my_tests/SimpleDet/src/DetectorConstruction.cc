@@ -28,7 +28,7 @@ public:
 
         //Fill the world with air
         G4LogicalVolume* logicWorld =
-                new G4LogicalVolume(solidWorld, air, "myWorld");
+                new G4LogicalVolume(solidWorld, air, "World");
 
         //
         // Envelope
