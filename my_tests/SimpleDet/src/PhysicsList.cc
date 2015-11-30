@@ -25,10 +25,13 @@ void MyPhysicsList::ConstructEM()
 	ph->RegisterProcess(scin, particle);
 	*/
 	G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-	thePhotoElectricEffect-> SetEmModel(new G4PenelopePhotoElectricModel());
+	thePhotoElectricEffect->SetEmModel(new G4PenelopePhotoElectricModel());
 	ph->RegisterProcess(thePhotoElectricEffect, particle);
 	G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-	theComptonScattering-> SetEmModel(new G4PenelopeComptonModel());
+	theComptonScattering->SetEmModel(new G4PenelopeComptonModel());
 	ph->RegisterProcess(theComptonScattering, particle);
 	ph->RegisterProcess(new G4GammaConversion(), particle);
+	G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
+	theRayleighScattering->SetEmModel(new G4PenelopeRayleighModel());
+	ph->RegisterProcess(theRayleighScattering, particle);
 }
