@@ -1,11 +1,14 @@
 #include "PhysicsList.hh"
-
+#include "G4SystemOfUnits.hh"
 void MyPhysicsList::ConstructProcess()
 {
 	// Define transportation process
 	AddTransportation();
 	// electromagnetic processes
 	ConstructEM();
+	// according to paper, set cut value
+	G4double cutValue = 0.5*um;
+	SetDefaultCutValue(cutValue);
 }
 
 void MyPhysicsList::ConstructEM()
