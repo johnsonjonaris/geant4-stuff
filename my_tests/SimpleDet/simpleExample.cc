@@ -14,6 +14,9 @@
 #include "G4GammaConversion.hh"
 #include "G4Scintillation.hh"
 #include "G4PenelopeComptonModel.hh"
+#include "G4RayleighScattering.hh"
+#include "G4PenelopeRayleighModel.hh"
+#include "G4PenelopePhotoElectricModel.hh"
 
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
@@ -50,9 +53,11 @@ void MyPhysicsList::ConstructEM()
 	scin->SetScintillationYieldFactor(beta);
 	ph->RegisterProcess(scin, particle);
 	*/
-	ph->RegisterProcess(new G4PhotoElectricEffect(), particle);
+	G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
+	thePhotoElectricEffect-> SetEmModel(new G4PenelopePhotoElectricModel());
+	ph->RegisterProcess(thePhotoElectricEffect, particle);
 	G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-	theComptonScattering->SetModel(new G4PenelopeComptonModel());
+	theComptonScattering-> SetEmModel(new G4PenelopeComptonModel());
 	ph->RegisterProcess(theComptonScattering, particle);
 	ph->RegisterProcess(new G4GammaConversion(), particle);
 }
