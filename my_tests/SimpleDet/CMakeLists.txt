@@ -30,13 +30,12 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 # NB: headers are included so they will show up in IDEs
 #
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-#file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/src/*.hh)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-#add_executable(simpleDet DetectorConstruction.cc ${sources} ${headers})
-add_executable(simpleExample simpleExample.cc ${sources})
+add_executable(simpleExample simpleExample.cc ${sources} ${headers})
 target_link_libraries(simpleExample ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------

@@ -1,5 +1,6 @@
-#include "DetectorConstruction.cc"
-#include "BasicPrimaryGeneratorAction.cc"
+#include "DetectorConstruction.hh"
+#include "BasicPrimaryGeneratorAction.hh"
+#include "PhysicsList.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -7,60 +8,10 @@
 #include "G4RunManager.hh"
 #endif
 
-#include "QBBC.hh"
-
-#include "G4PhotoElectricEffect.hh"
-#include "G4ComptonScattering.hh"
-#include "G4GammaConversion.hh"
-#include "G4Scintillation.hh"
-#include "G4PenelopeComptonModel.hh"
-#include "G4RayleighScattering.hh"
-#include "G4PenelopeRayleighModel.hh"
-#include "G4PenelopePhotoElectricModel.hh"
-
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
-class MyPhysicsList : G4VUserPhysicsList
-{
-	void ConstructEM();
-public:
-	void ConstructProcess();
-};
-
-void MyPhysicsList::ConstructProcess()
-{
-	// Define transportation process
-	AddTransportation();
-	// electromagnetic processes
-	ConstructEM();
-}
-
-void MyPhysicsList::ConstructEM()
-{
-	// Get pointer to G4PhysicsListHelper
-	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
-
-	//  Get pointer to gamma
-	G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
-
-	// Construct and register processes for gamma
-	// control scintillation factor to 400 Photon/MeV
-	/*
-	G4double beta = 400;
-	G4Scintillation *scin = new G4Scintillation();
-	scin->SetScintillationYieldFactor(beta);
-	ph->RegisterProcess(scin, particle);
-	*/
-	G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-	thePhotoElectricEffect-> SetEmModel(new G4PenelopePhotoElectricModel());
-	ph->RegisterProcess(thePhotoElectricEffect, particle);
-	G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-	theComptonScattering-> SetEmModel(new G4PenelopeComptonModel());
-	ph->RegisterProcess(theComptonScattering, particle);
-	ph->RegisterProcess(new G4GammaConversion(), particle);
-}
 
 int main(int argc,char** argv){
 
