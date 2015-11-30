@@ -5,7 +5,7 @@
 # Use these open statements to open selected visualization
 #
 # Use this open statement to create an OpenGL view:
-/vis/open OGL 600x600-0+0
+/vis/open OGL 800x800-0+0
 #
 # Use this open statement to create an OpenInventor view:
 #/vis/open OI
@@ -84,8 +84,6 @@
 /vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/eventID # Drawn at end of event
 /vis/scene/add/date    # Date stamp
-#/vis/scene/add/logo2D  # Simple logo
-#/vis/scene/add/logo    # 3D logo
 #
 # Frame
 /vis/set/colour red
@@ -101,10 +99,10 @@
 #
 # To get nice view
 /vis/geometry/set/visibility World 0 false
-/vis/geometry/set/visibility Envelope 0 false
+#/vis/geometry/set/visibility Envelope 0 false
 /vis/viewer/set/style surface
 /vis/viewer/set/hiddenMarker true
-/vis/viewer/set/viewpointThetaPhi 120 150
+/vis/viewer/set/viewpointThetaPhi 120 30
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
