@@ -13,7 +13,7 @@ BasicPrimaryGeneratorAction::BasicPrimaryGeneratorAction()
 	G4ParticleDefinition* particle
 			= particleTable->FindParticle(particleName="gamma");
 	fParticleGun->SetParticleDefinition(particle);
-	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,-1.));
 	fParticleGun->SetParticleEnergy(6.*MeV);
 }
 
@@ -36,7 +36,7 @@ void BasicPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	fParticleGun->SetParticlePosition(G4ThreeVector(x0*cm, y0*cm, -70.*cm));
 	*/
 	// for the LSF method depending on PSF
-	fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -70.*cm));
+    fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 70.*cm));
 
 	//Generate one instance of specified particle
 	fParticleGun->GeneratePrimaryVertex(anEvent);
