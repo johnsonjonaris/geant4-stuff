@@ -2,6 +2,7 @@
 
 void MyPhysicsList::ConstructProcess()
 {
+    fMaxNumPhotonStep = 100;
 	// Define transportation process
 	AddTransportation();
 	ConstructDecay();

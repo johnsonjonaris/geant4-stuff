@@ -61,7 +61,7 @@
 
 class MyPhysicsList : G4VUserPhysicsList
 {
-	G4int fMaxNumPhotonStep = 100;
+    G4int fMaxNumPhotonStep;
 public:
 	//these methods Construct physics processes and register them
 	void ConstructEM();
