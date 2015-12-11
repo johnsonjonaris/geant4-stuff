@@ -68,23 +68,41 @@ void BasicDetectorConstruction::defineScintillatorElement()
     G4NistManager* nist = G4NistManager::Instance();
     G4Element *fH = new G4Element("H", "H", 1., 1.01*g/mole);
     G4Element *fC = new G4Element("C", "C", 6., 12.01*g/mole);
-    G4Material *fPstyrene = new G4Material("Polystyrene", 1.03*g/cm3, 2);
-    fPstyrene->AddElement(fC, 8);
-    fPstyrene->AddElement(fH, 8);
+
+    G4Material *Pstyrene = new G4Material("Polystyrene", 1.03*g/cm3, 2);
+    Pstyrene->AddElement(fC, 8);
+    Pstyrene->AddElement(fH, 8);
+
+    G4double wls_Energy[] = {2.00*eV,2.87*eV,2.90*eV,3.47*eV};
+    const G4int wlsnum = sizeof(wls_Energy)/sizeof(G4double);
+    G4double rIndexPstyrene[]={ 1.5, 1.5, 1.5, 1.5};
+    G4double absorption1[]={2.*cm, 2.*cm, 2.*cm, 2.*cm};
+    G4double scintilFast[]={0.00, 0.00, 1.00, 1.00};
+    G4MaterialPropertiesTable *MPTPStyrene = new G4MaterialPropertiesTable();
+    MPTPStyrene->AddProperty("RINDEX",wls_Energy,rIndexPstyrene,wlsnum);
+    MPTPStyrene->AddProperty("ABSLENGTH",wls_Energy,absorption1,wlsnum);
+    MPTPStyrene->AddProperty("FASTCOMPONENT",wls_Energy, scintilFast,wlsnum);
+    MPTPStyrene->AddConstProperty("SCINTILLATIONYIELD",10./keV);
+    MPTPStyrene->AddConstProperty("RESOLUTIONSCALE",1.0);
+    MPTPStyrene->AddConstProperty("FASTTIMECONSTANT", 10.*ns);
+    Pstyrene->SetMaterialPropertiesTable(MPTPStyrene);
+
     G4Material* CsI = nist->FindOrBuildMaterial("G4_CESIUM_FLUORIDE");
     G4Material* CU = nist->FindOrBuildMaterial("G4_Cu");
-    // define scintillator element
-    // the element is a box made of CsI and of 40 mm thickness
-    // its walls (0.05 um thickness) are covered by Polystyrene
-    // the top is covered by a copper layer of 1 mm thickness
-    // the walls extends to cover the top copper cover
-    /* 1mm  40 mm
-      ---------------
-      ---------------
-      | |           |
-      | |           |
-      ---------------
-      ---------------
+    /*
+        define scintillator element
+        the element is a box made of CsI and of 40 mm thickness
+        its walls (0.05 um thickness) are covered by Polystyrene
+        the top is covered by a copper layer of 1 mm thickness
+        the walls extends to cover the top copper cover
+
+          1mm  40 mm
+          ---------------
+          ---------------
+          | |           |
+          | |           |
+          ---------------
+          ---------------
       */
     scintElement_box = new G4Box("scint_box",
                                  scintElementWidth/2.,
@@ -101,7 +119,7 @@ void BasicDetectorConstruction::defineScintillatorElement()
                                       scintElementCoverThickness/2.);
 
     scintElement_log = new G4LogicalVolume(scintElement_box, CsI, "scint_log",0,0,0);
-    scintElementWalls_log = new G4LogicalVolume(scintElementWalls_box, fPstyrene, "walls_log",0,0,0);
+    scintElementWalls_log = new G4LogicalVolume(scintElementWalls_box, Pstyrene, "walls_log",0,0,0);
     scintElementCover_log = new G4LogicalVolume(scintElementCover_box, CU, "cover_log",0,0,0);
 
     new G4PVPlacement(0,                                    // no rotation
@@ -121,7 +139,6 @@ void BasicDetectorConstruction::defineScintillatorElement()
                       scintElementWalls_log,                            // mother volume
                       false,                                // no boolean operation
                       0);                                   // its copy number
-
 
     setVisualAttributes();
     setOpticalProperties();
