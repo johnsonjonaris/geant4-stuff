@@ -42,22 +42,22 @@ void BasicDetectorConstruction::placeScintElements()
 {
     G4double dx = scintElementWidth+scintElementWallThickness;
     G4double dy = scintElementHeight+scintElementWallThickness;
-    G4double x = -nx*dx + dx/2.0;
-    G4double y = -ny*dy + dy/2.0;
+    G4double x = -nx/2*dx + dx/2.0;
+    G4double y = -ny/2*dy + dy/2.0;
     G4double z = -70.*cm;
     G4int k = 0;
 
     for (int j = 0; j < ny; ++j) {
-        y += dy;
-        x = -nx*dx + dx/2.0;
+        x = -nx/2*dx + dx/2.0;
         for(int i = 0; i < nx; ++i) {
-            x += dx;
             //printf("%f, %f, %f\n", x, y, z);
             new G4PVPlacement(0, G4ThreeVector(x,y,z), scintElementWalls_log, "scint_el",
                               logicWorld, false, k);
             scintElementPositions.push_back(G4ThreeVector(x,y,z));
+            x += dx;
             k++;
         }
+        y += dy;
     }
 }
 
