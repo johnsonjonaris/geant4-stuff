@@ -1,8 +1,12 @@
 #include "DetectorConstruction.hh"
 
-G4VPhysicalVolume* BasicDetectorConstruction::Construct()
+BasicDetectorConstruction::BasicDetectorConstruction()
 {
     setDefaultValues();
+}
+
+G4VPhysicalVolume* BasicDetectorConstruction::Construct()
+{
     //Obtain pointer to NIST material manager
     G4NistManager* nist = G4NistManager::Instance();
 
@@ -36,6 +40,23 @@ G4VPhysicalVolume* BasicDetectorConstruction::Construct()
     placeScintElements();
 
     return physWorld;
+}
+
+
+void BasicDetectorConstruction::ConstructSDandField()
+{
+    if (!physWorld) return;
+    // sensitive detector
+    if (!scintSD.Get()) {
+        G4cout << "Construction sensitive detector\n";
+        ScintSD* scint_SD = new ScintSD("ScintSD");
+        scintSD.Put(scint_SD);
+        scint_SD->initScintillatorElements(nx*ny);
+        scint_SD->setPmtPositions(scintElementPositions);
+    }
+    //sensitive detector need to be attached to something or else it doesnt get
+    //reset at the begining of events
+    SetSensitiveDetector(scintElementWalls_log, scintSD.Get());
 }
 
 void BasicDetectorConstruction::placeScintElements()

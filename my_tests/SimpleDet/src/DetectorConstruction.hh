@@ -8,6 +8,8 @@
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4VisAttributes.hh"
+#include "G4Cache.hh"
+#include "ScintSD.hh"
 
 class BasicDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -29,6 +31,9 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume *scintElementCover_log;
     G4LogicalVolume *scintElementWalls_log;
 
+    // sensitive detector
+    G4Cache<ScintSD*> scintSD;
+
     // Sensitive Detectors positions
     std::vector<G4ThreeVector> scintElementPositions;
 
@@ -43,7 +48,11 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     void placeScintElements();
 public: 
 
+    BasicDetectorConstruction();
+
 	G4VPhysicalVolume* Construct();
+    virtual void ConstructSDandField();
+
 };
 
 #endif
