@@ -131,10 +131,10 @@ void BasicDetectorConstruction::setVisualAttributes()
 {
     // set color attributes
     G4VisAttributes* scint_va = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
-    scint_va->SetForceSolid(true);
     scintElement_log->SetVisAttributes(scint_va);
 
     G4VisAttributes* walls_va = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
+    walls_va->SetForceSolid(true);
     scintElementWalls_log->SetVisAttributes(walls_va);
 
     G4VisAttributes* cover_va = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
@@ -155,7 +155,7 @@ void BasicDetectorConstruction::setDefaultValues()
     scintElementThickness = 40.0*mm;
     scintElementWallThickness = 0.05*um;
     scintElementCoverThickness = 1.0*mm;
-    // scintitllator is made of a 120 X 60 grid
-    nx = 120;
-    ny = 60;
+    // scintitllator is made of a 150X150 grid
+    nx = 150;
+    ny = 150;
 }
