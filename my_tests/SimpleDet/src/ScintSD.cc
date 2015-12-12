@@ -4,9 +4,6 @@ ScintSD::ScintSD(G4String name)
     : G4VSensitiveDetector(name)
 {
     scintCollection = NULL;
-    scintElPositionsX = NULL;
-    scintElPositionsY = NULL;
-    scintElPositionsZ = NULL;
     collectionName.insert("scintCollection");
 }
 
@@ -48,20 +45,4 @@ G4bool ScintSD::ProcessHits(G4Step* aStep,G4TouchableHistory* ){
     scintCollection->insert(scintHit);
 
     return true;
-}
-
-void ScintSD::setPmtPositions(const std::vector<G4ThreeVector>& positions)
-{
-    for (G4int i=0; i<G4int(positions.size()); ++i) {
-        if(scintElPositionsX) scintElPositionsX->push_back(positions[i].x());
-        if(scintElPositionsY) scintElPositionsY->push_back(positions[i].y());
-        if(scintElPositionsZ) scintElPositionsZ->push_back(positions[i].z());
-    }
-    printf("max: %f, %f\n",
-           *std::max_element(scintElPositionsX->begin(),scintElPositionsX->end()),
-           *std::max_element(scintElPositionsY->begin(),scintElPositionsY->end()));
-    printf("min: %f, %f\n",
-           *std::min_element(scintElPositionsX->begin(),scintElPositionsX->end()),
-           *std::min_element(scintElPositionsY->begin(),scintElPositionsY->end()));
-
 }

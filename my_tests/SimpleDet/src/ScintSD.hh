@@ -30,25 +30,9 @@ public:
     virtual void DrawAll() {}
     virtual void PrintAll() {}
 
-    //Initialize the arrays to store scintallator elements possitions
-    inline void initScintillatorElements(G4int nElements){
-        if(scintElPositionsX) delete scintElPositionsX;
-        if(scintElPositionsY) delete scintElPositionsY;
-        if(scintElPositionsZ) delete scintElPositionsZ;
-        scintElPositionsX = new G4DataVector(nElements);
-        scintElPositionsY = new G4DataVector(nElements);
-        scintElPositionsZ = new G4DataVector(nElements);
-    }
-
-    //Store a pmt position
-    void setPmtPositions(const std::vector<G4ThreeVector>& positions);
 private:
 
     ScintHitsCollection* scintCollection;
-    // scintillator locations
-    G4DataVector* scintElPositionsX;
-    G4DataVector* scintElPositionsY;
-    G4DataVector* scintElPositionsZ;
 };
 
 #endif

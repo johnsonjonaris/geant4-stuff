@@ -33,15 +33,9 @@ public:
     virtual void Draw() {}
     virtual void Print() {}
 
-    inline void IncPhotonCount(){ nPhotons++; }
-    inline G4int GetPhotonCount() const { return nPhotons; }
-
     inline void SetEdep(G4double de) { Edep = de; }
     inline void AddEdep(G4double de) { Edep += de; }
     inline G4double GetEdep() const { return Edep; }
-
-    inline void SetNumber(G4int n) { scintNumber = n; }
-    inline G4int GetNumber() const { return scintNumber; }
 
     inline void SetPos(G4ThreeVector xyz) { Pos = xyz; }
     inline void SetPos(G4double x,G4double y,G4double z)
@@ -51,8 +45,6 @@ public:
     inline const G4VPhysicalVolume * GetPhysV() { return PhysVol; }
 
 private:
-    G4int nPhotons;
-    G4int scintNumber;
     G4double Edep;
     G4ThreeVector Pos;
     const G4VPhysicalVolume* PhysVol;
