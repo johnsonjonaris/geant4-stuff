@@ -30,6 +30,7 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4Element *fC;
     G4Material *Pstyrene;
     G4Material *CsI;
+    G4Material *CsI_Tl;
     G4Material *Cu;
     G4Material *Al;
 
@@ -39,8 +40,9 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4Box *scintElementWalls_box;
     G4Box *photoCathode_box;
 
-    G4VPhysicalVolume* physWorld;
-    G4LogicalVolume* logicWorld;
+    G4VPhysicalVolume *physWorld;
+    //G4VPhysicalVolume *scint_
+    G4LogicalVolume *logicWorld;
 
     G4LogicalVolume *scintElement_log;
     G4LogicalVolume *scintElementCover_log;
@@ -57,6 +59,7 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     void initDefaultValues();
 
     void defineMaterials();
+    void defineMTP();
     void defineScintillatorElement();
     void setVisualAttributes();
     void setOpticalProperties();
