@@ -29,8 +29,7 @@ int main(int argc,char** argv){
 	// Physics list
 	// the physics list must always be registered before the primary generator action can
 	// be instantiated since otherwise the relevant particle definitions may not be available.
-	G4VModularPhysicsList* physicsList = new QBBC;
-	runManager->SetUserInitialization(physicsList);
+    runManager->SetUserInitialization(new MyPhysicsList());
 
 	// Primary generator action
 	runManager->SetUserAction(new BasicPrimaryGeneratorAction());

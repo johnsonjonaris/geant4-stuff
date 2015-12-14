@@ -78,9 +78,8 @@ void MyPhysicsList::ConstructParticle()
 	// This ensures that objects of these particle types will be
 	// created in the program.
 
-	G4BosonConstructor bConstructor;
-	bConstructor.ConstructParticle();
-	/* Equivalent to:
+    //G4BosonConstructor bConstructor;
+    //bConstructor.ConstructParticle();
 	// gamma
 	G4Gamma::GammaDefinition();
 
@@ -92,10 +91,9 @@ void MyPhysicsList::ConstructParticle()
 
 	// optical photon
 	G4OpticalPhoton::OpticalPhotonDefinition();
-	*/
-	G4LeptonConstructor lConstructor;
-	lConstructor.ConstructParticle();
-	/* Equivalent to:
+
+    //G4LeptonConstructor lConstructor;
+    //lConstructor.ConstructParticle();
 	// electron
 	G4Electron::ElectronDefinition();
 	G4Positron::PositronDefinition();
@@ -107,30 +105,25 @@ void MyPhysicsList::ConstructParticle()
 	G4MuonMinus::MuonMinusDefinition();
 	G4NeutrinoMu::NeutrinoMuDefinition();
 	G4AntiNeutrinoMu::AntiNeutrinoMuDefinition();
-	*/
 
-	G4MesonConstructor mConstructor;
-	mConstructor.ConstructParticle();
-	/* Equivalent to:
-	//These are needed for the mu- capture
+    //G4MesonConstructor mConstructor;
+    //mConstructor.ConstructParticle();
+
+    //These are needed for the mu- capture
 	G4PionMinus::PionMinus();
 	G4PionZero::PionZero();
 	G4PionPlus::PionPlus();
-	 and much more
-	*/
 
-	G4BaryonConstructor rConstructor;
-	rConstructor.ConstructParticle();
-	/* Equivalent to:
+    //G4BaryonConstructor rConstructor;
+    //rConstructor.ConstructParticle();
 	//These are needed for the mu- capture
 	G4Neutron::Neutron();
 	G4Proton::Proton();
-	*/
 
-	G4IonConstructor iConstructor;
-	iConstructor.ConstructParticle();
+    //G4IonConstructor iConstructor;
+    //iConstructor.ConstructParticle();
 	// Equivalent to:
-	// G4GenericIon::GenericIonDefinition();
+    G4GenericIon::GenericIonDefinition();
 }
 
 void MyPhysicsList::ConstructDecay()
@@ -216,8 +209,10 @@ void MyPhysicsList::SetCuts()
 	//   the default cut value for all particle types
 	//
 	// according to paper, set cut value
-	defaultCutValue = 0.5*um;
-	SetCutsWithDefault();
+    defaultCutValue = 0.5*um;
+    printf("Range cut = %f\n", defaultCutValue);
+
+    SetCutsWithDefault();
 
 	if (verboseLevel>0) DumpCutValuesTable();
 }

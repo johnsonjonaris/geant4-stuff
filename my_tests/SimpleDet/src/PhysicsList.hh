@@ -59,7 +59,7 @@
 
 #include "QBBC.hh"
 
-class MyPhysicsList : G4VUserPhysicsList
+class MyPhysicsList : public G4VUserPhysicsList
 {
     G4int fMaxNumPhotonStep;
 public:
