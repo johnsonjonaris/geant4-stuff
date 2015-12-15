@@ -6,6 +6,7 @@
 #include "G4Box.hh"
 #include "G4PVPlacement.hh"
 #include "G4LogicalVolume.hh"
+#include "G4SubtractionSolid.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4VisAttributes.hh"
 #include "G4Cache.hh"
@@ -21,6 +22,7 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4double scintElementThickness;
     G4double scintElementWallThickness;
     G4double scintElementCoverThickness;
+    G4double pmtThickness;
     G4double photoCathodeThickness;
 
     G4int nx, ny;
@@ -33,11 +35,13 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4Material *CsI_Tl;
     G4Material *Cu;
     G4Material *Al;
+    G4Material *Glass;
 
     G4Box *solidWorld;
     G4Box *scintElement_box;
     G4Box *scintElementCover_box;
-    G4Box *scintElementWalls_box;
+    G4SubtractionSolid *scintElementWalls_box;
+    G4Box *pmt_box;
     G4Box *photoCathode_box;
 
     G4VPhysicalVolume *physWorld;
@@ -47,7 +51,9 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume *scintElement_log;
     G4LogicalVolume *scintElementCover_log;
     G4LogicalVolume *scintElementWalls_log;
+    G4LogicalVolume *pmt_log;
     G4LogicalVolume *photoCathode_log;
+
 
     // sensitive detector
     G4Cache<ScintSD*> scintSD;
