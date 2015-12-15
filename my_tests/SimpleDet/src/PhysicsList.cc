@@ -42,6 +42,7 @@ void GeneralPhysics::ConstructParticle()
     // virtual particles for simulation which do not interact with materials and undertake transportation processes only.
     G4Geantino::GeantinoDefinition();
     G4ChargedGeantino::ChargedGeantinoDefinition();
+
     G4GenericIon::GenericIonDefinition();
 }
 
@@ -80,7 +81,6 @@ void EMPhysics::ConstructProcess()
 
     // Gamma Physics
     pManager = G4Gamma::Gamma()->GetProcessManager();
-    pManager = G4Gamma::Gamma()->GetProcessManager();
     G4PhotoElectricEffect *photoElectricEffect = new G4PhotoElectricEffect();
     photoElectricEffect->SetEmModel(new G4PenelopePhotoElectricModel());
     pManager->AddDiscreteProcess(photoElectricEffect);
@@ -113,19 +113,22 @@ void EMPhysics::ConstructProcess()
     pManager->AddProcess(eIonisation2,                  -1, 2, 2);
     pManager->AddProcess(eBremsstrahlung2,              -1, 3, 3);
     pManager->AddProcess(eplusAnnihilation,             0,-1, 4);
-
 }
 
 MyPhysicsList::MyPhysicsList() : G4VModularPhysicsList()
 {
     // General Physics
+    printf("Registering general physics\n");
     RegisterPhysics( new GeneralPhysics("general") );
     // EM Physics
+    printf("Registering EM physics\n");
     RegisterPhysics( new EMPhysics("standard EM"));
     // Muon Physics
+    printf("Registering muon physics\n");
     RegisterPhysics( new MuonPhysics("muon"));
 
     // Optical Physics
+    printf("Registering optical physics\n");
     G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
     RegisterPhysics( opticalPhysics );
 
