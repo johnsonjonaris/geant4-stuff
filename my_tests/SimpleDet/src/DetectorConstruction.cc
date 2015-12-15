@@ -111,7 +111,7 @@ void BasicDetectorConstruction::defineMTP()
 {
     // create material tables
     // air
-    G4double air_Energy[]={2.0*eV,7.0*eV,7.14*eV};
+    G4double air_Energy[]={1.9*eV,7.0*eV,7.14*eV};
     const G4int airnum = sizeof(air_Energy)/sizeof(G4double);
     G4double air_RIND[]={1.,1.,1.};
     G4MaterialPropertiesTable *air_MPT = new G4MaterialPropertiesTable();
@@ -121,46 +121,47 @@ void BasicDetectorConstruction::defineMTP()
     // source: http://hypernews.slac.stanford.edu/HyperNews/geant4/get/AUX/2011/06/01/03.27-76314-2DetectorConstruction.txt
     const G4int nEntries = 5;
     //energy values; currently this value corresponds to the maximum emission energy of CsI (550 nm)
-    // wavelength = {449.1126  498.9940  549.1585  598.7446  648.8749}
-    G4double photonEnergies[] = {2.761*eV,2.485*eV,2.258*eV,2.071*eV,1.911*eV};
+    // wavelength(nm) = 1240/eV = {449.1126  498.9940  549.1585  598.7446  648.8749}
+    G4double photonEnergies[] = {2.761*eV, 2.485*eV, 2.258*eV, 2.071*eV, 1.911*eV};
     // optical properties of Cesium Iodide
     G4double refractiveIndexCsI[] = {1.824, 1.807, 1.795, 1.786, 1.779};
-    G4double absorptionLengthCsI[] = {39.3*cm,39.3*cm,39.3*cm,39.3*cm,39.3*cm};
+    G4double absorptionLengthCsI[] = {39.3*cm, 39.3*cm, 39.3*cm, 39.3*cm, 39.3*cm};
     G4double Scnt_SLOW[] = { 0.29, 0.75, 1.0, 0.72, 0.39};
     G4MaterialPropertiesTable* CsI_MTP = new G4MaterialPropertiesTable();
     // add the optical properties of Cesium Iodide to this object
-    //CsI_MTP->AddProperty("FASTCOMPONENT", photonEnergies, Scnt_FAST, nEntries);
+    CsI_MTP->AddProperty("FASTCOMPONENT", photonEnergies, Scnt_SLOW, nEntries);
     CsI_MTP->AddProperty("SLOWCOMPONENT", photonEnergies, Scnt_SLOW, nEntries);
-    CsI_MTP->AddProperty("RINDEX",photonEnergies,refractiveIndexCsI,nEntries);
-    CsI_MTP->AddProperty("ABSLENGTH",photonEnergies,absorptionLengthCsI,nEntries);
+    CsI_MTP->AddProperty("RINDEX", photonEnergies, refractiveIndexCsI, nEntries);
+    CsI_MTP->AddProperty("ABSLENGTH", photonEnergies, absorptionLengthCsI, nEntries);
     CsI_MTP->AddConstProperty("SCINTILLATIONYIELD", 54000./MeV);
     CsI_MTP->AddConstProperty("YIELDRATIO", 0.0);
-    //CsI_MTP->AddConstProperty("FASTTIMECONSTANT", 1.*ns);
+    CsI_MTP->AddConstProperty("FASTTIMECONSTANT", 1.*ns);
     CsI_MTP->AddConstProperty("SLOWTIMECONSTANT", 1000.*ns);
     CsI_MTP->AddConstProperty("RESOLUTIONSCALE", 1.0);
     CsI_Tl->SetMaterialPropertiesTable(CsI_MTP);
+    // not sure of the value
+    CsI_Tl->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
+
     // Polystyrene
     // does that need modification
     // source: examples/extended/optical/LXe
-    //G4double PStyrene_Energy[] = {3.47*eV,2.90*eV,2.87*eV, 2.00*eV};
-    //const G4int PStyrene_num = sizeof(PStyrene_Energy)/sizeof(G4double);
     G4double rIndexPstyrene[] = {1.5, 1.5, 1.5, 1.5, 1.5};
     G4double absorption1[] = {2.*cm, 2.*cm, 2.*cm, 2.*cm, 2.*cm};
-    G4double scintilFast[] = { 0.1, 0.1, 0.1 , 0.1, 0.1};
+    G4double scintilFast[] = { 1., 1., 1. , 1., 1.};
     G4MaterialPropertiesTable *PStyrene_MTP = new G4MaterialPropertiesTable();
-    PStyrene_MTP->AddProperty("RINDEX", photonEnergies,rIndexPstyrene,nEntries);
+    PStyrene_MTP->AddProperty("RINDEX", photonEnergies, rIndexPstyrene, nEntries);
     // absorption length
-    PStyrene_MTP->AddProperty("ABSLENGTH", photonEnergies,absorption1,nEntries);
-    PStyrene_MTP->AddProperty("FASTCOMPONENT", photonEnergies, scintilFast,nEntries);
+    PStyrene_MTP->AddProperty("ABSLENGTH", photonEnergies, absorption1, nEntries);
+    PStyrene_MTP->AddProperty("FASTCOMPONENT", photonEnergies, scintilFast, nEntries);
     PStyrene_MTP->AddConstProperty("SCINTILLATIONYIELD", 10./keV);
     PStyrene_MTP->AddConstProperty("RESOLUTIONSCALE", 1.0);
     PStyrene_MTP->AddConstProperty("FASTTIMECONSTANT", 10.*ns);
     Pstyrene->SetMaterialPropertiesTable(PStyrene_MTP);
-    //Pstyrene->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
+    Pstyrene->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
 
     // Glass
-    G4double glass_RIND[]={1.49,1.49,1.49,1.49,1.49};
-    G4double glass_AbsLength[]={420.*cm,420.*cm,420.*cm,420.*cm,420.*cm};
+    G4double glass_RIND[]={1.49, 1.49, 1.49, 1.49, 1.49};
+    G4double glass_AbsLength[]={420.*cm, 420.*cm, 420.*cm, 420.*cm, 420.*cm};
     G4MaterialPropertiesTable *glass_MPT = new G4MaterialPropertiesTable();
     glass_MPT->AddProperty("ABSLENGTH",photonEnergies,glass_AbsLength,nEntries);
     glass_MPT->AddProperty("RINDEX",photonEnergies,glass_RIND,nEntries);
@@ -173,7 +174,7 @@ void BasicDetectorConstruction::defineMTP()
     G4MaterialPropertiesTable* Al_MTP = new G4MaterialPropertiesTable();
     Al_MTP->AddProperty("RINDEX",photonEnergies,refractiveIndexAl,nEntries);
     Al_MTP->AddProperty("ABSLENGTH",photonEnergies,absorptionLengthAl,nEntries);
-    Al->SetMaterialPropertiesTable(Al_MTP);
+    //Al->SetMaterialPropertiesTable(Al_MTP);
 }
 
 
@@ -184,17 +185,17 @@ void BasicDetectorConstruction::defineScintillatorElement()
         the element is a box made of CsI and of 40 mm thickness
         its walls (0.05 um thickness) are covered by Polystyrene
         the top is covered by a copper layer of 1 mm thickness
-        the back is covered by an aluminum layer of 10 mm thickness
-        that will absorb the photons
-        the walls extends to cover the top and bottom covers
+        the back is covered by a pmt glass layer of 1 mm
+        the glass layer is followd by an aluminum layer of 10 mm
+        thickness that will absorb the photons
 
-          1mm       40 mm   20 mm
-          ------------------|---|
-          ------------------|   |
-          | |      _|_      |   |
-          | |       |       |   |
-          ------------------|   |
-          ------------------|---|
+          1mm       40 mm   1mm 20 mm
+          |-|---------------|-|---|
+          | |---------------| |   |
+          | |      _|_      | |   |
+          | |       |       | |   |
+          | |---------------| |   |
+          |-|---------------|-|---|
       */
     scintElement_box = new G4Box("scint_box",
                                  scintElementWidth/2.,
@@ -303,7 +304,6 @@ void BasicDetectorConstruction::setVisualAttributes()
     scintElement_log->SetVisAttributes(scint_va);
 
     G4VisAttributes* walls_va = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
-    walls_va->SetForceSolid(true);
     scintElementWalls_log->SetVisAttributes(walls_va);
 
     G4VisAttributes* cover_va = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
@@ -331,17 +331,16 @@ void BasicDetectorConstruction::setOpticalProperties()
     G4double scintElementwalls_reflectivity[] = {0.9, 0.9, 0.9, 0.9, 0.9};
     G4double scintElementwalls_efficiency[] = {0., 0., 0., 0., 0.};
     G4MaterialPropertiesTable* scintElementWallsPT = new G4MaterialPropertiesTable();
-    scintElementWallsPT->AddProperty("REFLECTIVITY",
-                                     ephoton, scintElementwalls_reflectivity, num);
+    scintElementWallsPT->AddProperty("REFLECTIVITY", ephoton, scintElementwalls_reflectivity, num);
     scintElementWallsPT->AddProperty("EFFICIENCY", ephoton, scintElementwalls_efficiency, num);
     G4OpticalSurface* scintElementWalls_opsurf =
-            new G4OpticalSurface("ScintElementSurface", unified,groundfrontpainted,dielectric_dielectric);
+            new G4OpticalSurface("ScintElementSurface", unified, groundfrontpainted, dielectric_dielectric);
     scintElementWalls_opsurf->SetMaterialPropertiesTable(scintElementWallsPT);
 
     //**Photocathode surface properties
-    G4double photocath_EFF[]={1.,1.,1.,1.,1.}; //'detection' efficiency of photons
+    G4double photocath_EFF[]={1., 1., 1., 1., 1.}; //'detection' efficiency of photons
     // real and imaginary refraction index
-    G4double photocath_RINDEX[]={0.1 ,0.1 ,0.1 ,0.1 ,0.1};
+    G4double photocath_RINDEX[]={0.1, 0.1, 0.1, 0.1, 0.1};
     G4double photocath_ReR[]={1.92,1.92,1.92,1.92,1.92};
     G4double photocath_ImR[]={1.69,1.69,1.69,1.69,1.69};
 
@@ -351,7 +350,7 @@ void BasicDetectorConstruction::setOpticalProperties()
     photocath_mt->AddProperty("IMAGINARYRINDEX",ephoton,photocath_ImR,num);
     //photocath_mt->AddProperty("RINDEX", ephoton, photocath_RINDEX, num);
     G4OpticalSurface* photocath_opsurf=
-            new G4OpticalSurface("photocath_opsurf", glisur,polished,dielectric_metal);
+            new G4OpticalSurface("photocath_opsurf", glisur, polished, dielectric_metal);
     photocath_opsurf->SetMaterialPropertiesTable(photocath_mt);
 
     //**Create logical skin surfaces
