@@ -14,20 +14,24 @@
 #include "G4IonConstructor.hh"
 #include "G4ShortLivedConstructor.hh"
 
-
 #include "G4ComptonScattering.hh"
 #include "G4PenelopeComptonModel.hh"
 #include "G4GammaConversion.hh"
+#include "G4PenelopeGammaConversionModel.hh"
 #include "G4PhotoElectricEffect.hh"
 #include "G4PenelopePhotoElectricModel.hh"
+#include "G4eIonisation.hh"
+#include "G4PenelopeIonisationModel.hh"
+
 
 #include "G4eMultipleScattering.hh"
 #include "G4MuMultipleScattering.hh"
 #include "G4hMultipleScattering.hh"
 
-#include "G4eIonisation.hh"
 #include "G4eBremsstrahlung.hh"
+#include "G4PenelopeBremsstrahlungModel.hh"
 #include "G4eplusAnnihilation.hh"
+#include "G4PenelopeAnnihilationModel.hh"
 
 #include "G4MuIonisation.hh"
 #include "G4MuBremsstrahlung.hh"
@@ -46,35 +50,59 @@
 #include "G4RayleighScattering.hh"
 #include "G4OpRayleigh.hh"
 
-#include "G4OpMieHG.hh"
-#include "G4OpBoundaryProcess.hh"
+#include "G4OpticalPhysics.hh"
 
 #include "G4LossTableManager.hh"
 #include "G4EmSaturation.hh"
 
 #include "G4Threading.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4VModularPhysicsList.hh"
 
 #include "G4Decay.hh"
 
-#include "QBBC.hh"
-
-class MyPhysicsList : public G4VUserPhysicsList
+class MuonPhysics : public  G4VPhysicsConstructor
 {
-    G4int fMaxNumPhotonStep;
+
 public:
-	//these methods Construct physics processes and register them
-	void ConstructEM();
-	// Optical Physics
-	void ConstructOp();
-	void ConstructDecay();
+
+    MuonPhysics(const G4String& name ="muon") : G4VPhysicsConstructor(name) {}
+    virtual ~MuonPhysics() {}
+    virtual void ConstructProcess();
+    virtual void ConstructParticle();
+
+};
+
+class GeneralPhysics : public  G4VPhysicsConstructor
+{
+
+public:
+    GeneralPhysics(const G4String& name ="general") : G4VPhysicsConstructor(name) {}
+    virtual ~GeneralPhysics() {}
+    virtual void ConstructProcess();
+    virtual void ConstructParticle();
+
+};
+
+class EMPhysics : public  G4VPhysicsConstructor
+{
+
+public:
+    EMPhysics(const G4String& name ="EM") : G4VPhysicsConstructor(name) {}
+    virtual ~EMPhysics() {}
+    virtual void ConstructProcess();
+    virtual void ConstructParticle();
+
+};
+
+class MyPhysicsList : public G4VModularPhysicsList
+{
+
+public:
+    MyPhysicsList();
+    virtual ~MyPhysicsList() {}
 
 	virtual void SetCuts();
-
-	virtual void ConstructProcess();
-	virtual void ConstructParticle();
-
-	void SetNbOfPhotonsCerenkov(G4int);
 };
 
 #endif
