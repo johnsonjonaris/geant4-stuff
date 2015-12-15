@@ -1,26 +1,9 @@
 # Macro file for the visualization setting in the initialization phase 
-# of the B1 example when running in interactive mode
-#
-
-# Use these open statements to open selected visualization
-#
 # Use this open statement to create an OpenGL view:
 /vis/open OGL 900x900-0+0
 #
 # Use this open statement to create an OpenInventor view:
 #/vis/open OI
-#
-# Use this open statement to create a .prim file suitable for
-# viewing in DAWN:
-#/vis/open DAWNFILE
-#
-# Use this open statement to create a .heprep file suitable for
-# viewing in HepRApp:
-#/vis/open HepRepFile
-#
-# Use this open statement to create a .wrl file suitable for
-# viewing in a VRML viewer:
-#/vis/open VRML2FILE
 #
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
@@ -31,7 +14,7 @@
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointVector -1 0 0
+/vis/viewer/set/viewpointVector 0 0 1
 /vis/viewer/set/lightsVector -1 0 0
 #
 # Specify style (surface, wireframe, auxiliary edges,...)
@@ -51,8 +34,8 @@
 #/vis/scene/add/hits
 #
 # To draw only gammas:
-#/vis/filtering/trajectories/create/particleFilter
-#/vis/filtering/trajectories/particleFilter-0/add gamma
+/vis/filtering/trajectories/create/particleFilter
+/vis/filtering/trajectories/particleFilter-0/add gamma
 #
 # To invert the above, drawing all particles except gammas,
 # keep the above two lines but also add:
@@ -84,7 +67,7 @@
 /vis/scene/add/axes 0 0 0 10 cm # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/eventID # Drawn at end of event
 /vis/scene/add/date    # Date stamp
-/vis/viewer/zoom 0.9
+/vis/viewer/zoom 2.
 #
 # Frame
 /vis/set/colour red
@@ -93,17 +76,11 @@
 /vis/set/colour        # Revert to default colour (white)
 /vis/set/lineWidth     # Revert to default line width (1.)
 #
-# Attach text to one edge of Shape1, with a small, fixed offset
-#/vis/scene/add/text 0 6 -4 cm 18 4 4 Shape1
-# Attach text to one corner of Shape2, with a small, fixed offset
-#/vis/scene/add/text 6 7 10 cm 18 4 4 Shape2
-#
 # To get nice view
-/vis/geometry/set/visibility World 0 false
-#/vis/geometry/set/visibility Envelope 0 false
-/vis/viewer/set/style surface
+#/vis/geometry/set/visibility World 0 false
+/vis/viewer/set/style wireframe
 /vis/viewer/set/hiddenMarker true
-/vis/viewer/set/viewpointThetaPhi -45 30
+/vis/viewer/set/viewpointThetaPhi -45 -30
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
