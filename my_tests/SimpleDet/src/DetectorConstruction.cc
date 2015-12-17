@@ -145,17 +145,16 @@ void BasicDetectorConstruction::defineMTP()
     // Polystyrene
     // does that need modification
     // source: examples/extended/optical/LXe
-    G4double rIndexPstyrene[] = {1.5, 1.5, 1.5, 1.5, 1.5};
+    G4double rIndexPstyrene[] = {1.6, 1.6, 1.6, 1.6, 1.6};
     G4double absorption1[] = {2.*cm, 2.*cm, 2.*cm, 2.*cm, 2.*cm};
-    G4double scintilFast[] = { 1., 1., 1. , 1., 1.};
+    //G4double scintilFast[] = { 1., 1., 1. , 1., 1.};
     G4MaterialPropertiesTable *PStyrene_MTP = new G4MaterialPropertiesTable();
     PStyrene_MTP->AddProperty("RINDEX", photonEnergies, rIndexPstyrene, nEntries);
-    // absorption length
     PStyrene_MTP->AddProperty("ABSLENGTH", photonEnergies, absorption1, nEntries);
-    PStyrene_MTP->AddProperty("FASTCOMPONENT", photonEnergies, scintilFast, nEntries);
-    PStyrene_MTP->AddConstProperty("SCINTILLATIONYIELD", 10./keV);
-    PStyrene_MTP->AddConstProperty("RESOLUTIONSCALE", 1.0);
-    PStyrene_MTP->AddConstProperty("FASTTIMECONSTANT", 10.*ns);
+    //PStyrene_MTP->AddProperty("FASTCOMPONENT", photonEnergies, scintilFast, nEntries);
+    //PStyrene_MTP->AddConstProperty("SCINTILLATIONYIELD", 10./keV);
+    //PStyrene_MTP->AddConstProperty("RESOLUTIONSCALE", 1.0);
+    //PStyrene_MTP->AddConstProperty("FASTTIMECONSTANT", 10.*ns);
     Pstyrene->SetMaterialPropertiesTable(PStyrene_MTP);
     Pstyrene->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
 
@@ -175,6 +174,15 @@ void BasicDetectorConstruction::defineMTP()
     Al_MTP->AddProperty("RINDEX",photonEnergies,refractiveIndexAl,nEntries);
     Al_MTP->AddProperty("ABSLENGTH",photonEnergies,absorptionLengthAl,nEntries);
     //Al->SetMaterialPropertiesTable(Al_MTP);
+
+    // copper
+    G4double refractiveIndexCu[] = {1.32, 1.07, 0.68, 0.42, 0.27};
+    //http://physics.nist.gov/PhysRefData/XrayMassCoef/ElemTab/z29.html
+    G4double absorptionLengthCu[] = {947*m,947*m,947*m,947*m,947*m};
+    G4MaterialPropertiesTable* Cu_MTP = new G4MaterialPropertiesTable();
+    Cu_MTP->AddProperty("RINDEX",photonEnergies,refractiveIndexCu,nEntries);
+    Cu_MTP->AddProperty("ABSLENGTH",photonEnergies,absorptionLengthCu,nEntries);
+    //Cu->SetMaterialPropertiesTable(Cu_MTP);
 }
 
 
@@ -197,33 +205,34 @@ void BasicDetectorConstruction::defineScintillatorElement()
           | |---------------| |   |
           |-|---------------|-|---|
       */
+    G4double dx = scintElementSide+scintElementWallThickness;
+    G4double dy = scintElementSide+scintElementWallThickness;
     scintElement_box = new G4Box("scint_box",
-                                 scintElementWidth/2.,
-                                 scintElementHeight/2.,
-                                 scintElementThickness/2.);
-    G4Box *outerBox = new G4Box("Outer Box",
-                                (scintElementWidth+scintElementWallThickness)/2.,
-                                (scintElementHeight+scintElementWallThickness)/2.,
-                                scintElementThickness/2.);
-
-    scintElementWalls_box = new G4SubtractionSolid("walls_box", outerBox, scintElement_box);
-    scintElementCover_box = new G4Box("cover_box",
-                                      (scintElementWidth+scintElementWallThickness)/2.,
-                                      (scintElementHeight+scintElementWallThickness)/2.,
-                                      scintElementCoverThickness/2.);
+                                 scintElementSide/2.,
+                                 scintElementSide/2.,
+                                 scintElementHeight/2.);
+    scintElementWalls_box = new G4Box("walls_box",
+                                      dx/2., dy/2., scintElementHeight/2.);
     pmt_box = new G4Box("pmt_box",
-                        (scintElementWidth+scintElementWallThickness)/2.,
-                        (scintElementHeight+scintElementWallThickness)/2.,
-                        pmtThickness/2.);
+                        dx/2., dy/2., pmtHeight/2.);
 
     photoCathode_box = new G4Box("photocath_box",
-                                 (scintElementWidth+scintElementWallThickness)/2.,
-                                 (scintElementHeight+scintElementWallThickness)/2.,
-                                 photoCathodeThickness/2.);
+                                 dx/2., dy/2., photoCathodeHeight/2.);
+    G4double detectorThickness =
+            scintElementCoverThickness +
+            scintElementHeight +
+            pmtHeight +
+            photoCathodeHeight +
+            10.*mm;
+    detectorHousing_box = new G4Box("housing_box",
+                                    (nx*dx + 2*detectorHousingThickness)/2.,
+                                    (ny*dy + 2*detectorHousingThickness)/2.,
+                                    detectorThickness/2.);
 
     scintElement_log = new G4LogicalVolume(scintElement_box, CsI_Tl, "scint_log",0,0,0);
     scintElementWalls_log = new G4LogicalVolume(scintElementWalls_box, Pstyrene, "walls_log",0,0,0);
-    scintElementCover_log = new G4LogicalVolume(scintElementCover_box, Cu, "cover_log",0,0,0);
+    // the housing will act as the 1 mm cover layer
+    detectorHousing_log = new G4LogicalVolume(detectorHousing_box, Cu, "housing_log", 0,0,0);
     //the "photocathode" is a metal slab at the back of the glass that
     //is only a very rough approximation of the real thing since it only
     //absorbs or detects the photons based on the efficiency set below
@@ -239,22 +248,10 @@ void BasicDetectorConstruction::defineScintillatorElement()
                       false,                                // no boolean operation
                       0);                                   // its copy number
 
-    // put copper cover on top of scintillator
-    new G4PVPlacement(0,
-                      G4ThreeVector(0.,0.,
-                                    scintElementThickness/2. +
-                                    scintElementCoverThickness/2.),
-                      scintElementCover_log,
-                      "cu_cover",
-                      scintElementWalls_log,
-                      false,
-                      0);
-
     // put Al photocathode on the back of pmt
     new G4PVPlacement(0,
                       G4ThreeVector(0.,0.,
-                                    -(pmtThickness/2. +
-                                      photoCathodeThickness/2.)),
+                                    -pmtHeight/2.-photoCathodeHeight/2.),
                       photoCathode_log,
                       "photocathode",
                       pmt_log,
@@ -264,31 +261,40 @@ void BasicDetectorConstruction::defineScintillatorElement()
     // put Glass pmt on the back of scintillator
     new G4PVPlacement(0,
                       G4ThreeVector(0.,0.,
-                                    -(scintElementThickness/2. +
-                                      pmtThickness/2.)),
+                                    -scintElementHeight/2.-pmtHeight/2.),
                       pmt_log,
                       "pmt",
                       scintElementWalls_log,
                       false,
                       0);
+    // put housing
+    // put Glass pmt on the back of scintillator
+    new G4PVPlacement(0,
+                      G4ThreeVector(-dx/2.,-dy/2.,-70.*cm),
+                      detectorHousing_log,
+                      "housing",
+                      logicWorld,
+                      false,
+                      0);
+
 }
 
 void BasicDetectorConstruction::placeScintElements()
 {
-    G4double dx = scintElementWidth+scintElementWallThickness;
-    G4double dy = scintElementHeight+scintElementWallThickness;
+    G4double dx = scintElementSide+scintElementWallThickness;
+    G4double dy = scintElementSide+scintElementWallThickness;
     // the scintillator elements are not centered at the origin
     // to allow the rays to hit an element in the center
-    G4double x = -nx/2*dx + dx*0.75;
-    G4double y = -ny/2*dy + dy*0.75;
-    G4double z = -70.*cm;
+    G4double x;
+    G4double y = -ny/2.*dy + dy/2.;
+    G4double z = 4.*mm;
     G4int k = 0;
 
     for (int j = 0; j < ny; ++j) {
-        x = -nx/2*dx + dx*0.75;
+        x = -nx/2.*dx + dx/2.;
         for(int i = 0; i < nx; ++i) {
             new G4PVPlacement(0, G4ThreeVector(x,y,z), scintElementWalls_log,
-                              "scint_el", logicWorld, false, k);
+                              "scint_el", detectorHousing_log, false, k);
             scintElementPositions.push_back(G4ThreeVector(x,y,z));
             x += dx;
             k++;
@@ -306,15 +312,14 @@ void BasicDetectorConstruction::setVisualAttributes()
     G4VisAttributes* walls_va = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
     scintElementWalls_log->SetVisAttributes(walls_va);
 
-    G4VisAttributes* cover_va = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
-    scintElementCover_log->SetVisAttributes(cover_va);
-
-    G4VisAttributes* pmt_va = new G4VisAttributes(G4Colour(0.0,0.0,0.0));
+    G4VisAttributes* pmt_va = new G4VisAttributes(G4Colour(1.,0.5,0.0));
     pmt_log->SetVisAttributes(pmt_va);
 
     G4VisAttributes* photocatheder_va = new G4VisAttributes(G4Colour(0.0,0.75,1.0));
     photoCathode_log->SetVisAttributes(photocatheder_va);
 
+    G4VisAttributes* housing_va = new G4VisAttributes(G4Colour(1.,0.,0.));
+    detectorHousing_log->SetVisAttributes(housing_va);
 }
 
 //http://refractiveindex.info/?shelf=main&book=CsI&page=Li
@@ -329,49 +334,57 @@ void BasicDetectorConstruction::setOpticalProperties()
     // reflectivity from Wang's paper
     // the main use of the walls is to reflect the beams inside the element
     G4double scintElementwalls_reflectivity[] = {0.9, 0.9, 0.9, 0.9, 0.9};
-    G4double scintElementwalls_efficiency[] = {0., 0., 0., 0., 0.};
+    G4double scintElementwalls_efficiency[] = {0.1, 0.1, 0.1, 0.1, 0.1};
     G4MaterialPropertiesTable* scintElementWallsPT = new G4MaterialPropertiesTable();
     scintElementWallsPT->AddProperty("REFLECTIVITY", ephoton, scintElementwalls_reflectivity, num);
     scintElementWallsPT->AddProperty("EFFICIENCY", ephoton, scintElementwalls_efficiency, num);
     G4OpticalSurface* scintElementWalls_opsurf =
-            new G4OpticalSurface("ScintElementSurface", unified, groundfrontpainted, dielectric_dielectric);
+            new G4OpticalSurface("ScintElementSurface", unified, polished, dielectric_dielectric);
     scintElementWalls_opsurf->SetMaterialPropertiesTable(scintElementWallsPT);
 
     //**Photocathode surface properties
-    G4double photocath_EFF[]={1., 1., 1., 1., 1.}; //'detection' efficiency of photons
+    G4double photocath_efficiency[]={1., 1., 1., 1., 1.}; //'detection' efficiency of photons
     // real and imaginary refraction index
-    G4double photocath_RINDEX[]={0.1, 0.1, 0.1, 0.1, 0.1};
     G4double photocath_ReR[]={1.92,1.92,1.92,1.92,1.92};
     G4double photocath_ImR[]={1.69,1.69,1.69,1.69,1.69};
-
     G4MaterialPropertiesTable* photocath_mt = new G4MaterialPropertiesTable();
-    photocath_mt->AddProperty("EFFICIENCY", ephoton, photocath_EFF, num);
+    photocath_mt->AddProperty("EFFICIENCY", ephoton, photocath_efficiency, num);
     photocath_mt->AddProperty("REALRINDEX",ephoton,photocath_ReR,num);
     photocath_mt->AddProperty("IMAGINARYRINDEX",ephoton,photocath_ImR,num);
-    //photocath_mt->AddProperty("RINDEX", ephoton, photocath_RINDEX, num);
     G4OpticalSurface* photocath_opsurf=
             new G4OpticalSurface("photocath_opsurf", glisur, polished, dielectric_metal);
     photocath_opsurf->SetMaterialPropertiesTable(photocath_mt);
 
+    // extend housing photon range
+    G4double housing_efficiency[] = {1.,1.,1.,1.,1.};
+    G4double housing_ReR[]={1.16,1.13,0.95,0.3513,0.214};
+    G4double housing_ImR[]={2.39,2.56,2.57,3.01,3.67};
+    G4MaterialPropertiesTable* scintHsngPT = new G4MaterialPropertiesTable();
+    scintHsngPT->AddProperty("EFFICIENCY", ephoton, housing_efficiency, num);
+    scintHsngPT->AddProperty("REALRINDEX",ephoton,housing_ReR,num);
+    scintHsngPT->AddProperty("IMAGINARYRINDEX",ephoton,housing_ImR,num);
+    G4OpticalSurface* housing_opsurf=
+            new G4OpticalSurface("photocath_opsurf", glisur, polished, dielectric_metal);
+    housing_opsurf->SetMaterialPropertiesTable(scintHsngPT);
+
     //**Create logical skin surfaces
     new G4LogicalSkinSurface("walls_surf", scintElementWalls_log, scintElementWalls_opsurf);
     new G4LogicalSkinSurface("photocath_surf", photoCathode_log, photocath_opsurf);
-
-    //new G4LogicalBorderSurface("ScintWallSurface",);
+    new G4LogicalSkinSurface("housing_surf", detectorHousing_log, housing_opsurf);
 }
 
 void BasicDetectorConstruction::setDefaultValues()
 {
     // values according to: Wang et. al. "High-DQE EPIDs based on thick, segmented BGO
     // and CsI:Tl scintillators: Performance evaluation at extremely low dose"
-    scintElementWidth = 1.016*mm;
-    scintElementHeight = 1.016*mm;
-    scintElementThickness = 40.0*mm;
-    scintElementWallThickness = 0.05*um;
+    scintElementSide = 1.016*mm;
+    scintElementHeight = 40.0*mm;
+    scintElementWallThickness = 0.05*mm;
     scintElementCoverThickness = 1.0*mm;
-    pmtThickness = 1.0*mm;
-    photoCathodeThickness = 20.*mm;
-    // scintitllator is made of a 150X150 grid
-    nx = 150;
-    ny = 150;
+    detectorHousingThickness = 4.*mm;
+    pmtHeight = 1.0*mm;
+    photoCathodeHeight = 4.*mm;
+    // scintitllator is made of a 160X160 grid
+    nx = 160;
+    ny = 160;
 }

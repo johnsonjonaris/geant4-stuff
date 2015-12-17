@@ -18,12 +18,13 @@
 
 class BasicDetectorConstruction : public G4VUserDetectorConstruction
 {
-    G4double scintElementWidth, scintElementHeight;
-    G4double scintElementThickness;
+    G4double scintElementSide;
+    G4double scintElementHeight;
     G4double scintElementWallThickness;
     G4double scintElementCoverThickness;
-    G4double pmtThickness;
-    G4double photoCathodeThickness;
+    G4double pmtHeight;
+    G4double photoCathodeHeight;
+    G4double detectorHousingThickness;
 
     G4int nx, ny;
 
@@ -40,12 +41,12 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4Box *solidWorld;
     G4Box *scintElement_box;
     G4Box *scintElementCover_box;
-    G4SubtractionSolid *scintElementWalls_box;
+    G4Box *scintElementWalls_box;
     G4Box *pmt_box;
     G4Box *photoCathode_box;
+    G4Box *detectorHousing_box;
 
     G4VPhysicalVolume *physWorld;
-    //G4VPhysicalVolume *scint_
     G4LogicalVolume *logicWorld;
 
     G4LogicalVolume *scintElement_log;
@@ -53,6 +54,7 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume *scintElementWalls_log;
     G4LogicalVolume *pmt_log;
     G4LogicalVolume *photoCathode_log;
+    G4LogicalVolume *detectorHousing_log;
 
 
     // sensitive detector
@@ -76,8 +78,9 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
 public: 
 
     BasicDetectorConstruction();
+    virtual ~BasicDetectorConstruction() {}
 
-	G4VPhysicalVolume* Construct();
+    virtual G4VPhysicalVolume* Construct();
     virtual void ConstructSDandField();
 
 };
