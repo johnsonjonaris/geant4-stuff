@@ -1,13 +1,10 @@
 #include "PhotoCathodeSD.hh"
 
 PhotoCathodeSD::PhotoCathodeSD(G4String name)
-    : G4VSensitiveDetector(name)
+    : G4VSensitiveDetector(name),pmtHitCollection(NULL),
+      PMTPositionsX(0),PMTPositionsY(0),PMTPositionsZ(0)
 {
-    pmtHitCollection = NULL;
-    scintElPositionsX = NULL;
-    scintElPositionsY = NULL;
-    scintElPositionsZ = NULL;
-    collectionName.insert("scintCollection");
+    collectionName.insert("pmtHitCollection");
 }
 
 PhotoCathodeSD::~PhotoCathodeSD() {}
@@ -49,9 +46,9 @@ G4bool PhotoCathodeSD::ProcessHits(G4Step* aStep,G4TouchableHistory* ){
 void PhotoCathodeSD::setPositions(const std::vector<G4ThreeVector>& positions)
 {
     for (G4int i=0; i<G4int(positions.size()); ++i) {
-        if(scintElPositionsX) scintElPositionsX->push_back(positions[i].x());
-        if(scintElPositionsY) scintElPositionsY->push_back(positions[i].y());
-        if(scintElPositionsZ) scintElPositionsZ->push_back(positions[i].z());
+        if(PMTPositionsX) PMTPositionsX->push_back(positions[i].x());
+        if(PMTPositionsY) PMTPositionsY->push_back(positions[i].y());
+        if(PMTPositionsZ) PMTPositionsZ->push_back(positions[i].z());
     }
 }
 
@@ -89,9 +86,9 @@ G4bool PhotoCathodeSD::ProcessHits_constStep(const G4Step* aStep,
         hit->SetNumber(pmtNumber);
         hit->SetPhysVol(physVol);
         pmtHitCollection->insert(hit);
-        hit->SetPos((*scintElPositionsX)[pmtNumber],
-                    (*scintElPositionsY)[pmtNumber],
-                    (*scintElPositionsZ)[pmtNumber]);
+        hit->SetPos((*PMTPositionsX)[pmtNumber],
+                    (*PMTPositionsY)[pmtNumber],
+                    (*PMTPositionsZ)[pmtNumber]);
     }
 
     hit->IncPhotonCount(); //increment hit for the selected pmt

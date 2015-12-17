@@ -37,12 +37,12 @@ public:
 
     //Initialize the arrays to store scintallator elements possitions
     inline void initScintillatorElements(G4int nElements){
-        if(scintElPositionsX) delete scintElPositionsX;
-        if(scintElPositionsY) delete scintElPositionsY;
-        if(scintElPositionsZ) delete scintElPositionsZ;
-        scintElPositionsX = new G4DataVector(nElements);
-        scintElPositionsY = new G4DataVector(nElements);
-        scintElPositionsZ = new G4DataVector(nElements);
+        if(PMTPositionsX) delete PMTPositionsX;
+        if(PMTPositionsY) delete PMTPositionsY;
+        if(PMTPositionsZ) delete PMTPositionsZ;
+        PMTPositionsX = new G4DataVector(nElements);
+        PMTPositionsY = new G4DataVector(nElements);
+        PMTPositionsZ = new G4DataVector(nElements);
     }
 
     //Store a pmt position
@@ -51,9 +51,9 @@ private:
 
     PhotoCathodeHitsCollection* pmtHitCollection;
     // scintillator locations
-    G4DataVector* scintElPositionsX;
-    G4DataVector* scintElPositionsY;
-    G4DataVector* scintElPositionsZ;
+    G4DataVector* PMTPositionsX;
+    G4DataVector* PMTPositionsY;
+    G4DataVector* PMTPositionsZ;
 };
 
 #endif

@@ -1,6 +1,10 @@
 #include "DetectorConstruction.hh"
 #include "BasicPrimaryGeneratorAction.hh"
 #include "PhysicsList.hh"
+#include "EventAction.hh"
+//#include "SteppingAction.hh"
+#include "TrackingAction.hh"
+#include "StackingAction.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -33,6 +37,11 @@ int main(int argc,char** argv){
 
 	// Primary generator action
 	runManager->SetUserAction(new BasicPrimaryGeneratorAction());
+    // set other actions
+    runManager->SetUserAction(new StackingAction());
+    runManager->SetUserAction(new EventAction());
+    runManager->SetUserAction(new TrackingAction());
+    runManager->SetUserAction(new SteppingAction());
 
 	// Initialize G4 kernel
 	runManager->Initialize();
