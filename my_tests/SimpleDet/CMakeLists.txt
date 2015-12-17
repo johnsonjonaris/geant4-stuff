@@ -3,6 +3,9 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+ADD_DEFINITIONS(
+    -std=c++11 # Or -std=c++0x
+)
 project(simpleExample)
 
 #----------------------------------------------------------------------------
@@ -23,6 +26,7 @@ endif()
 #
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/src)
+
 
 
 #----------------------------------------------------------------------------

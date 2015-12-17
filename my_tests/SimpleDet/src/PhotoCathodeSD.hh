@@ -36,7 +36,9 @@ public:
     virtual void PrintAll() {}
 
     //Initialize the arrays to store scintallator elements possitions
-    inline void initScintillatorElements(G4int nElements){
+    inline void initScintillatorElements(G4int nx, G4int ny){
+        this->nx = nx; this->ny = ny;
+        G4int nElements = nx*ny;
         if(PMTPositionsX) delete PMTPositionsX;
         if(PMTPositionsY) delete PMTPositionsY;
         if(PMTPositionsZ) delete PMTPositionsZ;
@@ -44,6 +46,8 @@ public:
         PMTPositionsY = new G4DataVector(nElements);
         PMTPositionsZ = new G4DataVector(nElements);
     }
+
+    void getArraySize(G4int &nx, G4int &ny) { nx = this->nx; ny = this->ny; }
 
     //Store a pmt position
     void setPositions(const std::vector<G4ThreeVector>& positions);
@@ -54,6 +58,8 @@ private:
     G4DataVector* PMTPositionsX;
     G4DataVector* PMTPositionsY;
     G4DataVector* PMTPositionsZ;
+
+    G4int nx, ny;
 };
 
 #endif

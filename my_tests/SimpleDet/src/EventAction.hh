@@ -18,9 +18,13 @@
 
 #include "ScintHit.hh"
 #include "PhotoCathodeHit.hh"
+#include "PhotoCathodeSD.hh"
 #include "UserEventInformation.hh"
 #include "Trajectory.hh"
 
+#include "fstream"
+
+using namespace std;
 
 class G4Event;
 

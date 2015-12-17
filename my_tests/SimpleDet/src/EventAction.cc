@@ -94,8 +94,34 @@ void EventAction::EndOfEventAction(const G4Event* anEvent){
     //If we have set the flag to save 'special' events, save here
     if(fSaveThreshold&&eventInformation->GetPhotonCount() <= fSaveThreshold)
         G4RunManager::GetRunManager()->rndmSaveThisEvent();
-    printf("Event done\n");
 
+    // save an image
+    G4SDManager *SDman = G4SDManager::GetSDMpointer();
+    PhotoCathodeSD *pmtSD = (PhotoCathodeSD*)SDman->FindSensitiveDetector("PhotoCathodeSD");
+    if(pmtSD) {
+        G4int nx, ny;
+        pmtSD->getArraySize(nx, ny);
+        //uchar_mat image = zeros<uchar_mat>(nx,ny);
+        unsigned char *image = new unsigned char[nx*ny];
+        if(pmtHC) {
+            G4int pmts=pmtHC->entries();
+            for(int i=0; i< pmts; i++) {
+                G4int pmtNumber = (*pmtHC)[i]->GetNumber();
+                G4int nHits = (*pmtHC)[i]->GetPhotonCount();
+                int xi = pmtNumber % nx;
+                int yi = (pmtNumber/nx) % ny;
+                //printf("pmtN %d = (%d,%d), nHits %d\n", pmtNumber, xi, yi, nHits);
+                image[pmtNumber] = nHits;
+            }
+            // save the image
+            G4int eventNum = anEvent->GetEventID();
+            printf("event number %d\n", eventNum);
+            G4String filename = "D:/Workspace/results/result_" + G4String(std::to_string(eventNum));
+            ofstream myFile (filename, ios::out | ios::binary);
+            myFile.write((char*)image, nx*ny);
+        }
+    }
+    printf("Event done\n");
 }
 
 

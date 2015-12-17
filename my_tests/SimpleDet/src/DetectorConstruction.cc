@@ -47,7 +47,7 @@ void BasicDetectorConstruction::ConstructSDandField()
     if (!photoCathodeSD.Get()) {
         G4cout << "Construction photocathode sensitive detector\n";
         photoCathodeSD.Put(new PhotoCathodeSD("PhotoCathodeSD"));
-        photoCathodeSD.Get()->initScintillatorElements(nx*ny);
+        photoCathodeSD.Get()->initScintillatorElements(nx, ny);
         photoCathodeSD.Get()->setPositions(scintElementPositions);
     }
     //sensitive detector need to be attached to something or else it doesnt get
