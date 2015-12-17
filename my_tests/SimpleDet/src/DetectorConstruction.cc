@@ -165,7 +165,7 @@ void BasicDetectorConstruction::defineMTP()
     glass_MPT->AddProperty("ABSLENGTH",photonEnergies,glass_AbsLength,nEntries);
     glass_MPT->AddProperty("RINDEX",photonEnergies,glass_RIND,nEntries);
     Glass->SetMaterialPropertiesTable(glass_MPT);
-
+    /*
     // Aluminum
     G4double refractiveIndexAl[] = {0.61367, 0.78129, 0.96175, 1.1342, 1.3332};
     //http://physics.nist.gov/PhysRefData/XrayMassCoef/ElemTab/z13.html
@@ -173,7 +173,7 @@ void BasicDetectorConstruction::defineMTP()
     G4MaterialPropertiesTable* Al_MTP = new G4MaterialPropertiesTable();
     Al_MTP->AddProperty("RINDEX",photonEnergies,refractiveIndexAl,nEntries);
     Al_MTP->AddProperty("ABSLENGTH",photonEnergies,absorptionLengthAl,nEntries);
-    //Al->SetMaterialPropertiesTable(Al_MTP);
+    Al->SetMaterialPropertiesTable(Al_MTP);
 
     // copper
     G4double refractiveIndexCu[] = {1.32, 1.07, 0.68, 0.42, 0.27};
@@ -182,7 +182,8 @@ void BasicDetectorConstruction::defineMTP()
     G4MaterialPropertiesTable* Cu_MTP = new G4MaterialPropertiesTable();
     Cu_MTP->AddProperty("RINDEX",photonEnergies,refractiveIndexCu,nEntries);
     Cu_MTP->AddProperty("ABSLENGTH",photonEnergies,absorptionLengthCu,nEntries);
-    //Cu->SetMaterialPropertiesTable(Cu_MTP);
+    Cu->SetMaterialPropertiesTable(Cu_MTP);
+    */
 }
 
 
@@ -357,9 +358,12 @@ void BasicDetectorConstruction::setOpticalProperties()
 
     // extend housing photon range
     G4double housing_efficiency[] = {1.,1.,1.,1.,1.};
+    G4double housing_reflectivity[] = {0.65, 0.65, 0.65, 0.65, 0.65};
+    //http://www.filmetrics.com/refractive-index-database/Cu/Copper
     G4double housing_ReR[]={1.16,1.13,0.95,0.3513,0.214};
     G4double housing_ImR[]={2.39,2.56,2.57,3.01,3.67};
     G4MaterialPropertiesTable* scintHsngPT = new G4MaterialPropertiesTable();
+    scintHsngPT->AddProperty("REFLECTIVITY", ephoton, housing_reflectivity, num);
     scintHsngPT->AddProperty("EFFICIENCY", ephoton, housing_efficiency, num);
     scintHsngPT->AddProperty("REALRINDEX",ephoton,housing_ReR,num);
     scintHsngPT->AddProperty("IMAGINARYRINDEX",ephoton,housing_ImR,num);
