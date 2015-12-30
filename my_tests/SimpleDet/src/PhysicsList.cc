@@ -21,14 +21,14 @@ void MuonPhysics::ConstructProcess()
 
     // Muon Plus Physics
     pManager = G4MuonPlus::MuonPlus()->GetProcessManager();
-    pManager->AddProcess(new G4MuIonisation(),      -1,  1, 1);
+    pManager->AddProcess(new G4MuMultipleScattering(),      -1,  1, 1);
     pManager->AddProcess(new G4MuIonisation(),      -1,  2, 2);
     pManager->AddProcess(new G4MuBremsstrahlung(),  -1,  3, 3);
     pManager->AddProcess(new G4MuPairProduction(),  -1,  4, 4);
 
     // Muon Minus Physics
     pManager = G4MuonMinus::MuonMinus()->GetProcessManager();
-    pManager->AddProcess(new G4MuIonisation(),      -1,  1, 1);
+    pManager->AddProcess(new G4MuMultipleScattering(),      -1,  1, 1);
     pManager->AddProcess(new G4MuIonisation(),      -1,  2, 2);
     pManager->AddProcess(new G4MuBremsstrahlung(),  -1,  3, 3);
     pManager->AddProcess(new G4MuPairProduction(),  -1,  4, 4);
