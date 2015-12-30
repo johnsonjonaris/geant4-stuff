@@ -103,6 +103,8 @@ void EventAction::EndOfEventAction(const G4Event* anEvent){
         pmtSD->getArraySize(nx, ny);
         //uchar_mat image = zeros<uchar_mat>(nx,ny);
         unsigned char *image = new unsigned char[nx*ny];
+        for (int i=0; i<nx*ny; i++)
+            image[i] = 0;
         if(pmtHC) {
             G4int pmts=pmtHC->entries();
             for(int i=0; i< pmts; i++) {
@@ -120,6 +122,7 @@ void EventAction::EndOfEventAction(const G4Event* anEvent){
             ofstream myFile (filename, ios::out | ios::binary);
             myFile.write((char*)image, nx*ny);
         }
+        delete image;
     }
     printf("Event done\n");
 }
