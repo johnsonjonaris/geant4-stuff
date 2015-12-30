@@ -25,6 +25,7 @@ class BasicDetectorConstruction : public G4VUserDetectorConstruction
     G4double pmtHeight;
     G4double photoCathodeHeight;
     G4double detectorHousingThickness;
+    G4double detectorHeight;
 
     G4int nx, ny;
 

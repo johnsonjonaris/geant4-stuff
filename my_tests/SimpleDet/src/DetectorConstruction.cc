@@ -133,7 +133,7 @@ void BasicDetectorConstruction::defineMTP()
     CsI_MTP->AddProperty("SLOWCOMPONENT", photonEnergies, Scnt_SLOW, nEntries);
     CsI_MTP->AddProperty("RINDEX", photonEnergies, refractiveIndexCsI, nEntries);
     CsI_MTP->AddProperty("ABSLENGTH", photonEnergies, absorptionLengthCsI, nEntries);
-    CsI_MTP->AddConstProperty("SCINTILLATIONYIELD", 54000./MeV);
+    CsI_MTP->AddConstProperty("SCINTILLATIONYIELD", 400./MeV);
     CsI_MTP->AddConstProperty("YIELDRATIO", 0.0);
     CsI_MTP->AddConstProperty("FASTTIMECONSTANT", 1.*ns);
     CsI_MTP->AddConstProperty("SLOWTIMECONSTANT", 1000.*ns);
@@ -198,7 +198,7 @@ void BasicDetectorConstruction::defineScintillatorElement()
         the glass layer is followd by an aluminum layer of 10 mm
         thickness that will absorb the photons
 
-          1mm       40 mm   1mm 20 mm
+          1mm       40 mm   1mm 4 mm
           |-|---------------|-|---|
           | |---------------| |   |
           | |      _|_      | |   |
@@ -219,16 +219,10 @@ void BasicDetectorConstruction::defineScintillatorElement()
 
     photoCathode_box = new G4Box("photocath_box",
                                  dx/2., dy/2., photoCathodeHeight/2.);
-    G4double detectorThickness =
-            scintElementCoverThickness +
-            scintElementHeight +
-            pmtHeight +
-            photoCathodeHeight +
-            10.*mm;
     detectorHousing_box = new G4Box("housing_box",
                                     (nx*dx + 2*detectorHousingThickness)/2.,
                                     (ny*dy + 2*detectorHousingThickness)/2.,
-                                    detectorThickness/2.);
+                                    detectorHeight/2.);
 
     scintElement_log = new G4LogicalVolume(scintElement_box, CsI_Tl, "scint_log",0,0,0);
     scintElementWalls_log = new G4LogicalVolume(scintElementWalls_box, Pstyrene, "walls_log",0,0,0);
@@ -288,7 +282,9 @@ void BasicDetectorConstruction::placeScintElements()
     // to allow the rays to hit an element in the center
     G4double x;
     G4double y = -ny/2.*dy + dy/2.;
-    G4double z = 4.*mm;
+    // ensure the scintillator element is placed correctly to allow for the copper
+    // cover thickness
+    G4double z = detectorHeight/2. - (scintElementHeight/2. + scintElementCoverThickness);
     G4int k = 0;
 
     for (int j = 0; j < ny; ++j) {
@@ -388,6 +384,12 @@ void BasicDetectorConstruction::setDefaultValues()
     detectorHousingThickness = 4.*mm;
     pmtHeight = 1.0*mm;
     photoCathodeHeight = 4.*mm;
+    detectorHeight =
+            scintElementCoverThickness +
+            scintElementHeight +
+            pmtHeight +
+            photoCathodeHeight +
+            10.*mm;
     // scintitllator is made of a 160X160 grid
     nx = 160;
     ny = 160;
