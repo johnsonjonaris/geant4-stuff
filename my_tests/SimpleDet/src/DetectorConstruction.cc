@@ -133,7 +133,7 @@ void BasicDetectorConstruction::defineMTP()
     CsI_MTP->AddProperty("SLOWCOMPONENT", photonEnergies, Scnt_SLOW, nEntries);
     CsI_MTP->AddProperty("RINDEX", photonEnergies, refractiveIndexCsI, nEntries);
     CsI_MTP->AddProperty("ABSLENGTH", photonEnergies, absorptionLengthCsI, nEntries);
-    CsI_MTP->AddConstProperty("SCINTILLATIONYIELD", 400./MeV);
+    CsI_MTP->AddConstProperty("SCINTILLATIONYIELD", 100./MeV);
     CsI_MTP->AddConstProperty("YIELDRATIO", 0.0);
     CsI_MTP->AddConstProperty("FASTTIMECONSTANT", 1.*ns);
     CsI_MTP->AddConstProperty("SLOWTIMECONSTANT", 1000.*ns);
@@ -147,14 +147,14 @@ void BasicDetectorConstruction::defineMTP()
     // source: examples/extended/optical/LXe
     G4double rIndexPstyrene[] = {1.6, 1.6, 1.6, 1.6, 1.6};
     G4double absorption1[] = {2.*cm, 2.*cm, 2.*cm, 2.*cm, 2.*cm};
-    //G4double scintilFast[] = { 1., 1., 1. , 1., 1.};
+    G4double scintilFast[] = { 1., 1., 1. , 1., 1.};
     G4MaterialPropertiesTable *PStyrene_MTP = new G4MaterialPropertiesTable();
     PStyrene_MTP->AddProperty("RINDEX", photonEnergies, rIndexPstyrene, nEntries);
     PStyrene_MTP->AddProperty("ABSLENGTH", photonEnergies, absorption1, nEntries);
-    //PStyrene_MTP->AddProperty("FASTCOMPONENT", photonEnergies, scintilFast, nEntries);
-    //PStyrene_MTP->AddConstProperty("SCINTILLATIONYIELD", 10./keV);
-    //PStyrene_MTP->AddConstProperty("RESOLUTIONSCALE", 1.0);
-    //PStyrene_MTP->AddConstProperty("FASTTIMECONSTANT", 10.*ns);
+    PStyrene_MTP->AddProperty("FASTCOMPONENT", photonEnergies, scintilFast, nEntries);
+    PStyrene_MTP->AddConstProperty("SCINTILLATIONYIELD", 10./keV);
+    PStyrene_MTP->AddConstProperty("RESOLUTIONSCALE", 1.0);
+    PStyrene_MTP->AddConstProperty("FASTTIMECONSTANT", 10.*ns);
     Pstyrene->SetMaterialPropertiesTable(PStyrene_MTP);
     Pstyrene->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
 
