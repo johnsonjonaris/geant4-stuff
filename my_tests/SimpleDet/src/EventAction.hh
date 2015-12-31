@@ -64,6 +64,8 @@ private:
 
     G4bool fForcedrawphotons;
     G4bool fForcenophotons;
+
+    void saveImage(const G4Event *anEvent);
 };
 
 #endif

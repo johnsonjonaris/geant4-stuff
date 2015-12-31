@@ -95,38 +95,52 @@ void EventAction::EndOfEventAction(const G4Event* anEvent){
     if(fSaveThreshold&&eventInformation->GetPhotonCount() <= fSaveThreshold)
         G4RunManager::GetRunManager()->rndmSaveThisEvent();
 
-    // save an image
-    G4SDManager *SDman = G4SDManager::GetSDMpointer();
-    PhotoCathodeSD *pmtSD = (PhotoCathodeSD*)SDman->FindSensitiveDetector("PhotoCathodeSD");
-    if(pmtSD) {
-        G4int nx, ny;
-        pmtSD->getArraySize(nx, ny);
-        //uchar_mat image = zeros<uchar_mat>(nx,ny);
-        unsigned char *image = new unsigned char[nx*ny];
-        for (int i=0; i<nx*ny; i++)
-            image[i] = 0;
-        if(pmtHC) {
-            G4int pmts=pmtHC->entries();
-            for(int i=0; i< pmts; i++) {
-                G4int pmtNumber = (*pmtHC)[i]->GetNumber();
-                G4int nHits = (*pmtHC)[i]->GetPhotonCount();
-                int xi = pmtNumber % nx;
-                int yi = (pmtNumber/nx) % ny;
-                //printf("pmtN %d = (%d,%d), nHits %d\n", pmtNumber, xi, yi, nHits);
-                image[pmtNumber] = nHits;
-            }
-            // save the image
-            G4int eventNum = anEvent->GetEventID();
-            printf("event number %d\n", eventNum);
-            G4String filename = "D:/Workspace/results/result_" + G4String(std::to_string(eventNum));
-            ofstream myFile (filename, ios::out | ios::binary);
-            myFile.write((char*)image, nx*ny);
-        }
-        delete image;
-    }
+    saveImage(anEvent);
     printf("Event done\n");
 }
 
+void EventAction::saveImage(const G4Event* anEvent)
+{
+    // save an image
+    PhotoCathodeSD *pmtSD = (PhotoCathodeSD*)G4SDManager::GetSDMpointer()
+            ->FindSensitiveDetector("PhotoCathodeSD");
+
+    PhotoCathodeHitsCollection* pmtHC = 0;
+    G4HCofThisEvent* hitsCE = anEvent->GetHCofThisEvent();
+
+    //Get the hit collections
+    if(hitsCE){
+        if(fPMTCollID>=0) pmtHC = (PhotoCathodeHitsCollection*)(hitsCE->GetHC(fPMTCollID));
+    }
+    if(!pmtSD || !pmtHC) {
+        return;
+    }
+
+    G4int nx, ny;
+    pmtSD->getArraySize(nx, ny);
+    //uchar_mat image = zeros<uchar_mat>(nx,ny);
+    unsigned char *image = new unsigned char[nx*ny];
+    for (int i=0; i<nx*ny; i++)
+        image[i] = 0;
+    if(pmtHC) {
+        G4int pmts=pmtHC->entries();
+        for(int i=0; i< pmts; i++) {
+            G4int pmtNumber = (*pmtHC)[i]->GetNumber();
+            G4int nHits = (*pmtHC)[i]->GetPhotonCount();
+            int xi = pmtNumber % nx;
+            int yi = (pmtNumber/nx) % ny;
+            //printf("pmtN %d = (%d,%d), nHits %d\n", pmtNumber, xi, yi, nHits);
+            image[pmtNumber] = nHits;
+        }
+        // save the image
+        G4int eventNum = anEvent->GetEventID();
+        printf("event number %d\n", eventNum);
+        G4String filename = "D:/Workspace/results/result_" + G4String(std::to_string(eventNum));
+        ofstream myFile (filename, ios::out | ios::binary);
+        myFile.write((char*)image, nx*ny);
+    }
+    delete image;
+}
 
 void EventAction::SetSaveThreshold(G4int save){
     /*Sets the save threshold for the random number seed. If the number of photons
